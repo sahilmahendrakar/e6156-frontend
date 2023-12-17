@@ -31,8 +31,11 @@ export default function RootLayout({ children }) {
           <Link href="/author" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white mr-4">
             Author
           </Link>
-          <Link href="/user" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white">
+          <Link href="/user" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white mr-4">
             User
+          </Link>
+          <Link href="/organizer" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white mr-4">
+            Organizer
           </Link>
         </div>
       </div>
