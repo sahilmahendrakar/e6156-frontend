@@ -7,67 +7,68 @@ import BookClubCard from '../widgets/bookclub-card';
 // Define your Next.js component
 export default function Page() {
   // Initialize bookClubsUsers as an empty array
-  const [bookClubs, setBookClubs] = useState([]);
-  const [bookClubsUsers, setBookClubsUsers] = useState([]);
+  const [userBookclubs, setUserBookclubs] = useState([]);
+  const [bookTitles, setBookTitles] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://ec2-18-223-255-69.us-east-2.compute.amazonaws.com:8080/sync');
-//         const response = await fetch('http://e6156-users-402619.ue.r.appspot.com/api/user/20joshuaz/bookclubs');
 
-        if (response.ok) {
-          console.log(response);
-          const data1 = await response.json();
-          setBookClubs(data1);
-          console.log("IT WORKED");
-          console.log(data1);
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://ec2-13-59-6-191.us-east-2.compute.amazonaws.com:8080/sync');
+        if (response.ok) {
+          const data1 = await response.json();
           const data = JSON.parse(data1);
+          const userBooks = data.userBookclubs;
 
-          // Separate arrays for books and book clubs
-          const books = data.book;
-          const clubs = data.bookclub;
+          const fetchBookData = async (club) => {
+            try {
+              const response = await fetch(`http://ec2-13-58-156-255.us-east-2.compute.amazonaws.com:8080/api/bookclub/${club.bookclub}`);
+              if (response.ok) {
+                const data = await response.json();
+                console.log(JSON.stringify(data, null, 2));
+                return data.book;
+              } else {
+                console.error('Failed to fetch book clubs:', response.statusText);
+                return null;
+              }
+            } catch (error) {
+              console.error('Error during fetch:', error.message);
+              return null;
+            }
+          };
 
-          // Set the state for both books and book clubs
-          setBookClubs(books);
-          setBookClubsUsers(clubs);
+          const bookTitles = await Promise.all(userBooks.map(async (club) => {
+            return await fetchBookData(club);
+          }));
 
-          // Print the lists
-          console.log("Books:");
-          books.forEach(book => {
-            console.log(`Name: ${book.name}, Author: ${book.author}, Description: ${book.description || 'N/A'}`);
-          });
+          setUserBookclubs(userBooks);
+          setBookTitles(bookTitles);
 
-          console.log("\nBook Clubs:");
-          clubs.forEach(club => {
-            console.log(`Name: ${club.name}, Book: ${club.book}`);
-          });
+        } else {
+          console.error('Failed to fetch book clubs:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching book clubs:', error);
+      }
+    };
 
-        } else {
-          console.error('Failed to fetch book clubs:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching book clubs:', error);
-      }
-    };
+    fetchData();
+  }, []);
 
-    fetchData();
-  }, []);
 
   return (
     <div>
       <h1 className="semi-bold p-6">Hello, this is the User page!</h1>
       <h2 className="text-xl semi-bold p-6">You can see your bookclubs here:</h2>
-      {bookClubsUsers.map((club) => (
-        <BookClubCard
-          key={club.name}
-          bookclub_name={club.name}
-          book_title={club.book}
-          organizer="hard code"
-          date="hard code"
-        />
-      ))}
+      {userBookclubs.map((club, index) => (
+      <BookClubCard
+        key={club.bookclub}
+        bookclub_name={club.bookclub}
+        book_title={bookTitles[index]} // Set book_title using index to match the corresponding title
+        organizer={club.title}
+        date="hard code"
+      />
+    ))}
 
       <div className="flex flex-col items-center justify-center">
         <Link href="/create-bookclub">
