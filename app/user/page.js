@@ -13,8 +13,8 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-//         const response = await fetch('http://ec2-18-223-255-69.us-east-2.compute.amazonaws.com:8080/sync');
-        const response = await fetch('http://e6156-users-402619.ue.r.appspot.com/api/user/20joshuaz/bookclubs');
+        const response = await fetch('http://ec2-18-223-255-69.us-east-2.compute.amazonaws.com:8080/sync');
+//         const response = await fetch('http://e6156-users-402619.ue.r.appspot.com/api/user/20joshuaz/bookclubs');
 
         if (response.ok) {
           console.log(response);
