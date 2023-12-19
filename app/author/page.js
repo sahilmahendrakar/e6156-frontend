@@ -1,83 +1,113 @@
 'use client' // 👈 use it here
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 
 export default function Page() {
-//   const [bookTitle, setClubName] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const [description, setBookDescription] = useState("");
+  const [authorBooks, setAuthorBooks] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response_books = await fetch('http://ec2-18-119-159-117.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
+        if (response_books.ok) {
+          const data1 = await response_books.json();
+          setAuthorBooks(data1);
+        }
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleCreateBook = async () => {
-  console.log(bookTitle)
-  console.log(description)
     try {
-      const response = await fetch("http://ec2-18-118-153-242.us-east-2.compute.amazonaws.com:5001/api/book", {
+      const response = await fetch("http://ec2-3-18-107-209.us-east-2.compute.amazonaws.com:5001/api/book", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: bookTitle,
-          author: "New Jeans",
-          description: description,
+          author: "New Jeans",
+          description: description,
         }),
       });
 
+      // Handle response as needed
     } catch (error) {
-      console.error("Error creating bookclub:", error);
+      console.error("Error creating book:", error);
     }
   };
 
- 
-  return (
+return (
     <div>
-      <h1 class="semi-bold p-6">Hello, this is the Author page!</h1>
-      <h2 class="text-xl semi-bold p-6"> You can publish a book here:</h2>
+      <h1 className="semi-bold p-6">Hello, this is the Author page!</h1>
+      <h2 className="text-xl semi-bold p-6">Here are your current books:</h2>
+      {/* Loop through authorBooks to display existing books */}
+      {authorBooks.map((book, index) => (
+        <div key={index}>
+          <strong>{book.name}</strong>
+          <p>{book.description}</p>
+          <br />
+        </div>
+      ))}
 
-      <div class="flex flex-col items-center justify-center">
+      <h2 className="text-xl semi-bold p-6">You can publish a book here:</h2>
 
-      <form class="w-full max-w-sm bg-white p-6 rounded-lg">
-  <div class="md:flex md:items-center mb-6 ">
-    <div class="md:w-1/3">
-      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="book-title">
-        Book Title
-      </label>
+      <div className="flex flex-col items-center justify-center">
+        {/* Wider form container */}
+        <form className="w-full max-w-lg bg-white p-6 rounded-lg">
+          {/* Book Title input field */}
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="book-title">
+                Book Title
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <input
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                id="book-title"
+                type="text"
+                onChange={(e) => setBookTitle(e.target.value)}
+              />
+            </div>
+          </div>
+          {/* Description input field */}
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="book-description">
+                Description
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <input
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                id="book-description"
+                type="text"
+                onChange={(e) => setBookDescription(e.target.value)}
+              />
+            </div>
+          </div>
+          {/* Submit button */}
+          <div className="md:flex md:items-center">
+            <div className="md:w-1/3"></div>
+            <div className="md:w-2/3">
+              <button
+                className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                type="button"
+                onClick={handleCreateBook}
+              >
+                Post Book
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-    <div class="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" id="book-title" type="text"
-      onChange={(e) => setBookTitle(e.target.value)}
-
-      />
-
-    </div>
-  </div>
-  <div class="md:flex md:items-center mb-6">
-    <div class="md:w-1/3">
-      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="book-description">
-        Description
-      </label>
-    </div>
-    <div class="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" id="book-description" type="text"
-      onChange={(e) => setBookDescription(e.target.value)}
-      />
-
-    </div>
-  </div>
-  <div class="md:flex md:items-center">
-    <div class="md:w-1/3"></div>
-    <div class="md:w-2/3">
-
-         <button className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button"
-         onClick={handleCreateBook}
-           >
-           Post Book
-         </button>
-
-    </div>
-  </div>
-</form>
-    </div>
-    </div>
-
   );
-  }
+}
