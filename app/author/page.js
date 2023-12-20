@@ -67,7 +67,7 @@ return (
 
       <h2 className="text-xl semi-bold p-6">Here are some stats on your books!</h2>
       {authorStats.map((book, index) => (
-        <StatsCard key={index} bookName={book.name} number={book.TotalBookClubs} />
+        <StatsCard key={index} bookName={book.book} number={book.TotalBookClubs} />
       ))}
 
 
