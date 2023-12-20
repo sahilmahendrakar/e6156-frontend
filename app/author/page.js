@@ -11,13 +11,22 @@ export default function Page() {
   const [description, setBookDescription] = useState("");
   const [authorBooks, setAuthorBooks] = useState([]);
   const [authorStats, setAuthorStats] = useState([]);
+  const [user, setUser] = useState(""); // Use useState for user
+
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
         const response_books = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
         const response_books_stats = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
+
+        if (response_new.ok) {
+          const data = await response_new.json();
+          console.log(data.key);
+          setUser(data.key); // Use setUser to update the user state
+        }
 
         if (response_books.ok) {
           const data1 = await response_books.json();
@@ -45,7 +54,7 @@ export default function Page() {
         },
         body: JSON.stringify({
           name: bookTitle,
-          author: "New Jeans",
+          author: user,
           description: description,
         }),
       });
