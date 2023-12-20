@@ -19,8 +19,8 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
-        const response_books = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
-        const response_books_stats = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
+        const response_books = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
+        const response_books_stats = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
 
         if (response_new.ok) {
           const data = await response_new.json();
@@ -45,25 +45,41 @@ export default function Page() {
     fetchData();
   }, []);
 
-  const handleCreateBook = async () => {
-    try {
-      const response = await fetch("http://ec2-3-18-107-209.us-east-2.compute.amazonaws.com:5001/api/book", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: bookTitle,
-          author: user,
-          description: description,
-        }),
-      });
+const handleCreateBook = async () => {
+  try {
+    const response = await fetch("http://ec2-18-222-46-98.us-east-2.compute.amazonaws.com:5001/api/book", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: bookTitle,
+        author: "New Jeans",
+        description: description,
+      }),
+    });
 
-      // Handle response as needed
-    } catch (error) {
-      console.error("Error creating book:", error);
-    }
-  };
+    if (response.ok) {
+      // Fetch updated list of books after creating a new book
+      const updatedBooksResponse = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
+      const updatedStatsResponse = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
+      
+      if (updatedBooksResponse.ok && updatedStatsResponse.ok) {
+        const updatedBooks = await updatedBooksResponse.json();
+        const updatedStats = await updatedStatsResponse.json();
+
+        // Update authorBooks and authorStats states with new data
+        setAuthorBooks(updatedBooks);
+        setAuthorStats(updatedStats);
+      }
+    } else {
+      console.error("Error creating book:", response.status);
+    }
+  } catch (error) {
+    console.error("Error creating book:", error);
+  }
+};
+
 
 return (
     <div>

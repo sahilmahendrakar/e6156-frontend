@@ -91,42 +91,88 @@ export default function Page() {
   };
 
   const createReview = async () => {
-    try { 
-
+    try {
       const bookclubNameElement = document.getElementById('bookclubName');
       const bookclubNameText = bookclubNameElement.textContent;
-
-      console.log("FIELDS")
-      console.log(review)
-      console.log(bookclubNameText)
-
+  
       const response = await fetch(`http://ec2-3-146-35-34.us-east-2.compute.amazonaws.com:8080/api/review`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-            body: JSON.stringify({
-              user: "sc4789",
-              review: review,
-              bookclub: bookclubNameText,
-            }),
+        body: JSON.stringify({
+          user: "sc4789",
+          review: review,
+          bookclub: bookclubNameText,
+        }),
       });
   
       if (response.ok) {
         setLeaveReview('Successfully posted a review');
         console.log("POSTED A REVIEW");
+  
+        // Fetch the updated list of reviews after posting the new review
+        const updatedReviewsResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubNameText}/reviews`);
+        const updatedReviewsData = await updatedReviewsResponse.json();
+  
+        // Update the reviews list on the page with the newly fetched reviews
+        const updatedReviewArray = updatedReviewsData.map(review => `User: ${review.user}, Review: ${review.review}`);
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = ''; // Clear existing reviews
+        updatedReviewArray.forEach(updatedReview => {
+          const li = document.createElement('li');
+          li.textContent = updatedReview;
+          reviewsList.appendChild(li);
+        });
       } else {
-        // If response is not ok (status is not in the 2xx range)
+        // Handle error state or display an appropriate message to the user
         console.error('Error posting review. Status:', response.status);
         const text = await response.text(); // Get the response as text
         console.error('Response text:', text);
-        // Handle error state or display an appropriate message to the user
       }
     } catch (error) {
       console.error("Error posting review:", error);
       // Handle any other errors occurring during the request
     }
   };
+
+//   const createReview = async () => {
+//     try { 
+
+//       const bookclubNameElement = document.getElementById('bookclubName');
+//       const bookclubNameText = bookclubNameElement.textContent;
+
+//       console.log("FIELDS")
+//       console.log(review)
+//       console.log(bookclubNameText)
+
+//       const response = await fetch(`http://ec2-3-146-35-34.us-east-2.compute.amazonaws.com:8080/api/review`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//             body: JSON.stringify({
+//               user: "sc4789",
+//               review: review,
+//               bookclub: bookclubNameText,
+//             }),
+//       });
+  
+//       if (response.ok) {
+//         setLeaveReview('Successfully posted a review');
+//         console.log("POSTED A REVIEW");
+//       } else {
+//         // If response is not ok (status is not in the 2xx range)
+//         console.error('Error posting review. Status:', response.status);
+//         const text = await response.text(); // Get the response as text
+//         console.error('Response text:', text);
+//         // Handle error state or display an appropriate message to the user
+//       }
+//     } catch (error) {
+//       console.error("Error posting review:", error);
+//       // Handle any other errors occurring during the request
+//     }
+//   };
   
   
 
