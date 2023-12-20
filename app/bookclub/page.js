@@ -6,11 +6,14 @@ export default function Page() {
   const [leaveMessage, setLeaveMessage] = useState('');
   const [leaveReview, setLeaveReview] = useState('');
   const [review, setReview] = useState('');
+  const [user, setUser] = useState(""); // Use useState for user
+
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const bookclubName = queryParams.get('bookclub_name');
     const bookTitle = queryParams.get('book_title');
+
 
     // Function to fetch book club data
     const fetchBookClubData = async () => {
@@ -22,42 +25,62 @@ export default function Page() {
         console.log(data.key);
         setUser(data.key); // Use setUser to update the user state
       }
-      
-      const summaryResponse = await fetch(`http://ec2-18-222-46-98.us-east-2.compute.amazonaws.com:5001/api/book/${bookTitle}/summary`);
-      const summaryHTML = await summaryResponse.text();
-      // Parse the HTML to get the content inside the <p> tag
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(summaryHTML, 'text/html');
-      const paragraphContent = doc.querySelector('p').textContent;
-      // Manipulate the DOM to update the UI directly
-      const summaryElement = document.getElementById('summary');
-      summaryElement.textContent = paragraphContent;
+
+      try {
+
+        const summaryResponse = await fetch(`http://ec2-18-222-46-98.us-east-2.compute.amazonaws.com:5001/api/book/${bookTitle}/summary`);
+        if (summaryResponse.ok) {
+          const summaryHTML = await summaryResponse.text();
+          // Parse the HTML to get the content inside the <p> tag
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(summaryHTML, 'text/html');
+          const paragraphContent = doc.querySelector('p').textContent;
+          // Manipulate the DOM to update the UI directly
+          const summaryElement = document.getElementById('summary');
+          summaryElement.textContent = paragraphContent;
+        }
+      } catch(error) {
+          console.error("Error fetching summary response:", error);
+      }
 
       // Fetch the list of members
-      const membersResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubName}/users`);
-      const membersData = await membersResponse.json();
-      const memberArray = membersData.map(member => member.user);
-      // Manipulate the DOM to update the UI directly
-      const membersList = document.getElementById('membersList');
-      memberArray.forEach(member => {
-        const li = document.createElement('li');
-        li.textContent = member;
-        membersList.appendChild(li);
-      });
-      
+      try {
+        const membersResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubName}/users`);
+        if (membersResponse.ok) {
+          const membersData = await membersResponse.json();
+          const memberArray = membersData.map(member => member.user);
+          // Manipulate the DOM to update the UI directly
+          const membersList = document.getElementById('membersList');
+          memberArray.forEach(member => {
+            const li = document.createElement('li');
+            li.textContent = member;
+            membersList.appendChild(li);
+          });
+        }
+      } catch(error) {
+          console.error("Error fetching member response:", error);
+      }
+
+
       // Fetch the list of reviews
-      const reviewsResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubName}/reviews`);
-      const reviewsData = await reviewsResponse.json();
-      // Extract "review" and "user" properties into separate arrays
-      const reviewArray = reviewsData.map(review => review.review);
-      const userArray = reviewsData.map(review => review.user);
-      // Manipulate the DOM to update the UI directly
-      const reviewsList = document.getElementById('reviewsList');
-      reviewArray.forEach((review, index) => {
-        const li = document.createElement('li');
-        li.textContent = `User: ${userArray[index]}, Review: ${review}`;
-        reviewsList.appendChild(li);
-      });
+      try {
+        const reviewsResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubName}/reviews`);
+        if (reviewsResponse.ok) {
+          const reviewsData = await reviewsResponse.json();
+          // Extract "review" and "user" properties into separate arrays
+          const reviewArray = reviewsData.map(review => review.review);
+          const userArray = reviewsData.map(review => review.user);
+          // Manipulate the DOM to update the UI directly
+          const reviewsList = document.getElementById('reviewsList');
+          reviewArray.forEach((review, index) => {
+            const li = document.createElement('li');
+            li.textContent = `User: ${userArray[index]}, Review: ${review}`;
+            reviewsList.appendChild(li);
+          });
+        }
+      } catch(error) {
+          console.error("Error fetching member response:", error);
+      }
 
       // Update the book club name
       const bookclubNameElement = document.getElementById('bookclubName');
@@ -71,7 +94,7 @@ export default function Page() {
   }, []);
 
   const removeUser = async () => {
-    try { 
+    try {
       const bookclubNameElement = document.getElementById('bookclubName');
       const bookclubNameText = bookclubNameElement.textContent;
       const response = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubNameText}/users/${user}`, {
@@ -80,7 +103,7 @@ export default function Page() {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (response.ok) {
         setLeaveMessage('Successfully left the bookclub');
         console.log("LEFT THE BOOKCLUB");
@@ -101,7 +124,7 @@ export default function Page() {
     try {
       const bookclubNameElement = document.getElementById('bookclubName');
       const bookclubNameText = bookclubNameElement.textContent;
-  
+
       const response = await fetch(`http://ec2-3-146-35-34.us-east-2.compute.amazonaws.com:8080/api/review`, {
         method: "POST",
         headers: {
@@ -113,15 +136,15 @@ export default function Page() {
           bookclub: bookclubNameText,
         }),
       });
-  
+
       if (response.ok) {
         setLeaveReview('Successfully posted a review');
         console.log("POSTED A REVIEW");
-  
+
         // Fetch the updated list of reviews after posting the new review
         const updatedReviewsResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubNameText}/reviews`);
         const updatedReviewsData = await updatedReviewsResponse.json();
-  
+
         // Update the reviews list on the page with the newly fetched reviews
         const updatedReviewArray = updatedReviewsData.map(review => `User: ${review.user}, Review: ${review.review}`);
         const reviewsList = document.getElementById('reviewsList');
@@ -144,7 +167,7 @@ export default function Page() {
   };
 
 //   const createReview = async () => {
-//     try { 
+//     try {
 
 //       const bookclubNameElement = document.getElementById('bookclubName');
 //       const bookclubNameText = bookclubNameElement.textContent;
@@ -164,7 +187,7 @@ export default function Page() {
 //               bookclub: bookclubNameText,
 //             }),
 //       });
-  
+
 //       if (response.ok) {
 //         setLeaveReview('Successfully posted a review');
 //         console.log("POSTED A REVIEW");
@@ -180,8 +203,8 @@ export default function Page() {
 //       // Handle any other errors occurring during the request
 //     }
 //   };
-  
-  
+
+
 
   return (
     <div>

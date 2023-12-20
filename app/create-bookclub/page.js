@@ -10,7 +10,7 @@ export default function Page() {
   useEffect(() => {
       const fetchData = async () => {
         try {
-          const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
+          const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/current-user');
           if (response_new.ok) {
             const data = await response_new.json();
             console.log("HEREEE");

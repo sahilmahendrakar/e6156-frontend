@@ -17,6 +17,7 @@ export default function Page() {
 
 
         const response = await fetch('http://ec2-3-16-14-76.us-east-2.compute.amazonaws.com:8080/sync');
+        // const response = await fetch('http://0.0.0.0:8000/sync');
         if (response.ok) {
           const data1 = await response.json();
           const data = JSON.parse(data1);

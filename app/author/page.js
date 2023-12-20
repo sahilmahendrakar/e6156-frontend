@@ -19,14 +19,16 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
-        const response_books = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
-        const response_books_stats = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
-
+       
         if (response_new.ok) {
           const data = await response_new.json();
           console.log(data.key);
           setUser(data.key); // Use setUser to update the user state
         }
+        console.log(user)
+        const response_books = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/books`);
+        const response_books_stats = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/total_bookclubs`);
+
 
         if (response_books.ok) {
           const data1 = await response_books.json();
@@ -63,7 +65,7 @@ const handleCreateBook = async () => {
       // Fetch updated list of books after creating a new book
       const updatedBooksResponse = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${user}/books`);
       const updatedStatsResponse = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${user}/total_bookclubs`);
-      
+
       if (updatedBooksResponse.ok && updatedStatsResponse.ok) {
         const updatedBooks = await updatedBooksResponse.json();
         const updatedStats = await updatedStatsResponse.json();
