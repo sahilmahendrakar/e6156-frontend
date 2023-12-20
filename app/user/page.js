@@ -22,15 +22,17 @@ export default function Page() {
         }
 
 
-        const response = await fetch('http://ec2-13-59-6-191.us-east-2.compute.amazonaws.com:8080/sync');
+        const response = await fetch('http://ec2-3-16-14-76.us-east-2.compute.amazonaws.com:8080/sync');
         if (response.ok) {
           const data1 = await response.json();
           const data = JSON.parse(data1);
           const userBooks = data.userBookclubs;
+          console.log("USER BOOKS")
+          console.log(userBooks)
 
           const fetchBookData = async (club) => {
             try {
-              const response = await fetch(`http://ec2-13-58-156-255.us-east-2.compute.amazonaws.com:8080/api/bookclub/${club.bookclub}`);
+              const response = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${club.bookclub}`);
               if (response.ok) {
                 const data = await response.json();
                 console.log(JSON.stringify(data, null, 2));

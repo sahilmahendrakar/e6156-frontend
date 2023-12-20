@@ -28,7 +28,7 @@ export default function Page() {
 
   const handleCreateClub = async () => {
     try {
-      const response = await fetch("http://ec2-3-21-103-36.us-east-2.compute.amazonaws.com:8080/api/bookclub", {
+      const response = await fetch("http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,13 +45,13 @@ export default function Page() {
         const usernames = members.split(',').map(username => username.trim());
 
         try {
-          const organizerResponse = await fetch(`http://ec2-3-21-103-36.us-east-2.compute.amazonaws.com:8080/api/bookclub/${clubName}/users`, {
+          const organizerResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${clubName}/users`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              user: user,
+              user: "sc4789",
               title: "Organizer",
             }),
           });
@@ -70,7 +70,7 @@ export default function Page() {
           console.log("Inside the loop")
           console.log(usernames[i])
           try {
-            const memberResponse = await fetch(`http://ec2-3-21-103-36.us-east-2.compute.amazonaws.com:8080/api/bookclub/${clubName}/users`, {
+            const memberResponse = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${clubName}/users`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
