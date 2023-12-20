@@ -27,7 +27,6 @@ export default function BookClubCard({ bookclub_name, book_title, organizer, dat
             <div className="flex items-center">
               <div className="text-sm">
                 <p className="text-gray-900 leading-none">{organizer}</p>
-                <p className="text-gray-600">{date}</p>
               </div>
             </div>
             <div className="p-2"></div>

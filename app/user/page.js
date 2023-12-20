@@ -76,7 +76,6 @@ export default function Page() {
         bookclub_name={club.bookclub}
         book_title={bookTitles[index]} // Set book_title using index to match the corresponding title
         organizer={club.title}
-        date="hard code"
       />
     ))}
 
