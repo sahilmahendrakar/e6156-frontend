@@ -16,7 +16,7 @@ export default function BookClubCard({ bookclub_name, book_title, organizer, dat
 
   return (
     //TODO NICOLE: 
-    <Link href={`/bookclub/${bookclub_name}`}>
+    <Link href={{ pathname: '/bookclub', query: { bookclub_name, book_title } }}>
       <a>
         <div className="max-w-sm w-full lg:max-w-full lg:flex items-center justify-center p-6">
           <div className="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-lg p-6 flex flex-col justify-between leading-normal">
