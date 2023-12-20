@@ -34,9 +34,7 @@ export default function RootLayout({ children }) {
           <Link href="/user" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white mr-4">
             User
           </Link>
-          <Link href="/organizer" class="block mt-4 lg:inline-block lg:mt-0 text-white-200 hover:text-white mr-4">
-            Organizer
-          </Link>
+          
         </div>
       </div>
       </nav>
