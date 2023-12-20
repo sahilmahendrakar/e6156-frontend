@@ -14,6 +14,16 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
+        if (response_new.ok) {
+          console.log(response_new)
+          const data1 = await response_new.json();
+          console.log("HEREEE")
+          console.log(data1)
+          console.log(data1.key)
+        }
+
+
         const response = await fetch('http://ec2-13-59-6-191.us-east-2.compute.amazonaws.com:8080/sync');
         if (response.ok) {
           const data1 = await response.json();
