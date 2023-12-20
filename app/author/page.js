@@ -1,6 +1,10 @@
 'use client' // 👈 use it here
 
 import React, { useState, useEffect } from "react";
+import BookCard from '../widgets/book-card';
+import StatsCard from '../widgets/stats-card';
+
+
 
 export default function Page() {
   const [bookTitle, setBookTitle] = useState("");
@@ -58,20 +62,12 @@ return (
       <h2 className="text-xl semi-bold p-6">Here are your current books:</h2>
       {/* Loop through authorBooks to display existing books */}
       {authorBooks.map((book, index) => (
-        <div key={index}>
-          <strong>{book.name}</strong>
-          <p>{book.description}</p>
-          <br />
-        </div>
+        <BookCard key={index} bookName={book.name} description={book.description} />
       ))}
 
       <h2 className="text-xl semi-bold p-6">Here are some stats on your books!</h2>
       {authorStats.map((book, index) => (
-        <div key={index}>
-          <strong>Book Name: {book.book}</strong>
-          <p>Total Book Clubs: {book.TotalBookClubs}</p>
-          <br />
-        </div>
+        <StatsCard key={index} bookName={book.name} number={book.TotalBookClubs} />
       ))}
 
 
