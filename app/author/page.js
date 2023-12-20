@@ -18,27 +18,28 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
        
         if (response_new.ok) {
           const data = await response_new.json();
           console.log(data.key);
-          setUser(data.key); // Use setUser to update the user state
+          setUser(data.key);
+          const response_books = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/books`);
+          const response_books_stats = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/total_bookclubs`);
+
+
+          if (response_books.ok) {
+            const data1 = await response_books.json();
+            setAuthorBooks(data1);
+          }
+
+          if (response_books_stats.ok) {
+            const data = await response_books_stats.json();
+            setAuthorStats(data);
+          } // Use setUser to update the user state
         }
-        console.log(user)
-        const response_books = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/books`);
-        const response_books_stats = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${data.key}/total_bookclubs`);
 
-
-        if (response_books.ok) {
-          const data1 = await response_books.json();
-          setAuthorBooks(data1);
-        }
-
-        if (response_books_stats.ok) {
-          const data = await response_books_stats.json();
-          setAuthorStats(data);
-        }
       } catch (error) {
         console.error("Error fetching books:", error);
       }
