@@ -6,14 +6,23 @@ export default function Page() {
   const [bookTitle, setBookTitle] = useState("");
   const [description, setBookDescription] = useState("");
   const [authorBooks, setAuthorBooks] = useState([]);
+  const [authorStats, setAuthorStats] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response_books = await fetch('http://ec2-18-119-159-117.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
+        const response_books = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
+        const response_books_stats = await fetch('http://ec2-3-15-182-47.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
+
         if (response_books.ok) {
           const data1 = await response_books.json();
           setAuthorBooks(data1);
+        }
+
+        if (response_books_stats.ok) {
+          const data = await response_books_stats.json();
+          setAuthorStats(data);
         }
       } catch (error) {
         console.error("Error fetching books:", error);
@@ -55,6 +64,17 @@ return (
           <br />
         </div>
       ))}
+
+      <h2 className="text-xl semi-bold p-6">Here are some stats on your books!</h2>
+      {authorStats.map((book, index) => (
+        <div key={index}>
+          <strong>Book Name: {book.book}</strong>
+          <p>Total Book Clubs: {book.TotalBookClubs}</p>
+          <br />
+        </div>
+      ))}
+
+
 
       <h2 className="text-xl semi-bold p-6">You can publish a book here:</h2>
 
