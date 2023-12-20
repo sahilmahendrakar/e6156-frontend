@@ -16,11 +16,9 @@ export default function Page() {
       try {
         const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
         if (response_new.ok) {
-          console.log(response_new)
-          const data1 = await response_new.json();
-          console.log("HEREEE")
-          console.log(data1)
-          console.log(data1.key)
+          const data = await response_new.json();
+          console.log("HEREEE");
+          console.log(data.key);
         }
 
 
