@@ -14,12 +14,6 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
-        if (response_new.ok) {
-          const data = await response_new.json();
-          console.log("HEREEE");
-          console.log(data.key);
-        }
 
 
         const response = await fetch('http://ec2-3-16-14-76.us-east-2.compute.amazonaws.com:8080/sync');

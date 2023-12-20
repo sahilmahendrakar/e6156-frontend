@@ -16,6 +16,13 @@ export default function Page() {
     const fetchBookClubData = async () => {
 
       // Fetch the Goodreads summary
+      const response_new = await fetch('https://e6156-users-402619.ue.r.appspot.com/api/current-user');
+      if (response_new.ok) {
+        const data = await response_new.json();
+        console.log(data.key);
+        setUser(data.key); // Use setUser to update the user state
+      }
+      
       const summaryResponse = await fetch(`http://ec2-18-222-46-98.us-east-2.compute.amazonaws.com:5001/api/book/${bookTitle}/summary`);
       const summaryHTML = await summaryResponse.text();
       // Parse the HTML to get the content inside the <p> tag
@@ -67,7 +74,7 @@ export default function Page() {
     try { 
       const bookclubNameElement = document.getElementById('bookclubName');
       const bookclubNameText = bookclubNameElement.textContent;
-      const response = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubNameText}/users/sc4789`, {
+      const response = await fetch(`http://ec2-18-217-80-67.us-east-2.compute.amazonaws.com:8080/api/bookclub/${bookclubNameText}/users/${user}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +108,7 @@ export default function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user: "sc4789",
+          user: user,
           review: review,
           bookclub: bookclubNameText,
         }),

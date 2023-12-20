@@ -54,15 +54,15 @@ const handleCreateBook = async () => {
       },
       body: JSON.stringify({
         name: bookTitle,
-        author: "New Jeans",
+        author: user,
         description: description,
       }),
     });
 
     if (response.ok) {
       // Fetch updated list of books after creating a new book
-      const updatedBooksResponse = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/books');
-      const updatedStatsResponse = await fetch('http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/New Jeans/total_bookclubs');
+      const updatedBooksResponse = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${user}/books`);
+      const updatedStatsResponse = await fetch(`http://ec2-18-222-112-233.us-east-2.compute.amazonaws.com:8080/api/author/${user}/total_bookclubs`);
       
       if (updatedBooksResponse.ok && updatedStatsResponse.ok) {
         const updatedBooks = await updatedBooksResponse.json();
